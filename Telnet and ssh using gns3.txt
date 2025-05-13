@@ -1,0 +1,101 @@
+R1:
+enable
+config t
+hostname R1
+int fa0/0
+ip address 192.168.1.1 255.255.255.0
+no shutdown
+exit
+exit
+
+enable
+config t
+int fa1/0
+ip address 192.168.3.1 255.255.255.0
+no shutdown
+exit
+
+PC1:
+ip 192.168.1.2 255.255.255.0 192.168.1.1
+PC2:
+ip 192.168.1.3 255.255.255.0 192.168.1.1
+
+#OSPF R1:
+enable
+config t
+router ospf 1
+network 192.168.3.0 0.0.0.255 area 0
+network 192.168.1.0 0.0.0.255 area 1
+exit
+
+#telnet and ssh R1:
+enable
+config t
+! Set Domain name for SSH
+ip domain-name ccnalab.local
+! Generate SSH keys
+crypto key generate rsa
+line vty 0 1
+username ccnp password cisco123
+line vty 0 1
+username ccna password cisco123
+line vty 0 1
+! You can use transport input telnet or ssh or all
+transport input all
+! login local is necessary
+login local
+exit
+!use enable secret to enable password when moving from R1> to R1#
+enable secret cisco123
+
+R2:
+enable
+config t
+hostname R2
+int fa0/0
+ip address 192.168.2.1 255.255.255.0
+no shutdown
+exit
+exit
+
+enable
+config t
+int fa0/1
+ip address 192.168.3.2 255.255.255.0
+no shutdown
+exit
+exit
+
+!PC3 192.168.2.2:
+ip 192.168.2.2 255.255.255.0 192.168.2.1
+!PC4 192.168.2.3: 
+ip 192.168.2.3 255.255.255.0 192.168.2.1
+
+#OSPF R2:
+enable
+config t
+router ospf 2
+network 192.168.3.0 0.0.0.255 area 0
+network 192.168.2.0 0.0.0.255 area 2
+exit
+
+#telnet and ssh R2:
+enable
+config t
+! Set Domain name for SSH
+ip domain-name ccnalab.local
+! Generate SSH keys
+crypto key generate rsa
+line vty 0 1
+username comptia password cisco456
+line vty 0 1
+username ethical password cisco456
+line vty 0 1
+! You can use transport input telnet or ssh or all
+transport input ssh
+! login local is necessary
+login local
+exit
+!use enable secret to enable password when moving from R1> to R1#
+enable secret cisco456
+
